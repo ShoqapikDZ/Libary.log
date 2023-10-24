@@ -1,7 +1,8 @@
 import tkinter
+from mainpage import Main
+import sqlite3
+import csv
+from tools import Database
+from tools import Toolsbox
 
-window = tkinter.Tk()
-
-window.title("Page d'Accueil")
-window.iconbitmap("assets/codepen.ico")
-window.mainloop()
+Main()
