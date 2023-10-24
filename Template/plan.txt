@@ -1,0 +1,8 @@
+1- Une interface de connexion
+2- Page d'acceuil :
+       - Liste des différents livre (titre, auteur, numéro de série, genre, emprunté[bool], emprunteur[if emprunté == True] )
+       - Bouton vers page de retard avec nombre affiché
+       - Bouton vers page de nouvel emprunt
+       - Bouton vers page de nouveau livre
+       - Bouton se déconnecter vers page de connexion
+       - Bouton vers page de nouvel utilisateur
