@@ -15,41 +15,26 @@ class Database:
         # Créer un curseur pour exécuter des requêtes SQL
         self.cur = self.conn.cursor()
 
-    def csv_actualisation_user(self):
-        # Exécutez une requête pour récupérer toutes les données de la table
-        self.cur.execute("SELECT * FROM Utilisateurs")
-
-        # Récupérez toutes les lignes de résultat
-        donnees = self.cur.fetchall()
-
-        # Chemin du fichier CSV de sortie
-        csv_file = "Template/utilisateurs.csv"
-
-        # Écrivez les données dans le fichier CSV
-        with open(csv_file, "w", newline="") as csvfile:
-            csv_writer = csv.writer(csvfile)
-
-            # Écrivez l'en-tête du fichier CSV
-            en_tete = [description[0] for description in self.cur.description]
-            csv_writer.writerow(en_tete)
-
-            # Écrivez les données
-            csv_writer.writerows(donnees)
-
-        print(f"Les données ont été exportées dans {csv_file}.")
-
-    def creer_table(self, nom_table, colonnes):
-        # Créer la table avec les colonnes spécifiées
-        self.cur.execute(f"CREATE TABLE IF NOT EXISTS {nom_table} ({', '.join(colonnes)})")
-
-        # Valider les modifications et fermer la connexion
-        self.conn.commit()
 
     def ajouter_utilisateur(self, nom_utilisateur, mot_de_passe):
         # Insérer un nouvel utilisateur dans la table
         self.cur.execute("INSERT INTO Utilisateurs (NomUtilisateur, MotDePasse) VALUES (?, ?)", (nom_utilisateur, mot_de_passe))
 
         # Valider les modifications et fermer la connexion
+        self.conn.commit()
+    
+    def ajouter_book(self,title,autor,numS,genre,is_emprunté):
+        self.cur.execute("INSERT INTO books (Titre,Auteur,NumeroSerie,Genre,Emprunte) VALUES(?,?,?,?,?)", (title,autor,numS,genre,is_emprunté))
+
+        self.conn.commit()
+    
+    def new_emprunt(self, book_id, emprunteur_id):
+        self.cur.execute("UPDATE Books SET Emprunte = TRUE,EmprunteurID = ? WHERE ID = ?",(emprunteur_id,book_id))
+
+        self.conn.commit()
+
+    def delete_emprunt(self, book_id):
+        self.cur.execute("UPDATE Books SET Emprunte = 0, EmprunteurID = NULL WHERE ID = ?",(book_id,))
         self.conn.commit()
 
 class Toolsbox:
@@ -62,4 +47,5 @@ class Toolsbox:
         while pmtr != "exit":
             pmtr = input("Entrez votre code : ")
             exec(pmtr)
+
 
