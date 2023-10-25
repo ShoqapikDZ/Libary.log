@@ -1,6 +1,6 @@
 import sqlite3
 import csv
-
+from datetime import date, datetime
 import sqlite3
 import csv
 
@@ -24,28 +24,45 @@ class Database:
         self.conn.commit()
     
     def ajouter_book(self,title,autor,numS,genre,is_emprunté):
-        self.cur.execute("INSERT INTO books (Titre,Auteur,NumeroSerie,Genre,Emprunte) VALUES(?,?,?,?,?)", (title,autor,numS,genre,is_emprunté))
+        self.cur.execute("INSERT INTO Books_new (Titre,Auteur,NumeroSerie,Genre,Emprunte) VALUES(?,?,?,?,?)", (title,autor,numS,genre,is_emprunté))
 
         self.conn.commit()
     
-    def new_emprunt(self, book_id, emprunteur_id):
-        self.cur.execute("UPDATE Books SET Emprunte = TRUE,EmprunteurID = ? WHERE ID = ?",(emprunteur_id,book_id))
+    def new_emprunt(self, numS, UtilisateurID,Year,Month,Day):
+        self.DateLimite = datetime(Year, Month, Day).strftime('%Y-%m-%d')
+        self.DateEmprunt = date.today()
+        self.cur.execute("UPDATE Books_new SET Emprunte = TRUE WHERE NumeroSerie = ?",(numS,))
+        self.cur.execute("INSERT INTO Emprunt (UtilisateurID,LivreID,DateEmprunt,DateLimite) VALUES (?,?,?,?)  ;",(UtilisateurID,numS,self.DateEmprunt,self.DateLimite))
 
         self.conn.commit()
 
-    def delete_emprunt(self, book_id):
-        self.cur.execute("UPDATE Books SET Emprunte = 0, EmprunteurID = NULL WHERE ID = ?",(book_id,))
+    def delete_emprunt(self, numS):
+        self.cur.execute("UPDATE Books_new SET Emprunte = 0 WHERE NumeroSerie = ?",(numS,))
+        self.cur.execute("DELETE FROM Emprunt WHERE LivreID = ?",(numS,))
         self.conn.commit()
 
+    def instance_user(self):
+        self.cur.execute("SELECT * FROM Utilisateurs ;")
+
+        # Récupérer toutes les lignes de résultat
+        self.donnees_user = self.cur.fetchall()
+        
+        return self.donnees_user 
+
+    def connexion(self, NomUtilisateur, MotDePasse):
+        self.cur.execute("UPDATE Utilisateurs SET Is_connected = 1 WHERE NomUtilisateur = ? AND MotDePasse = ?", (NomUtilisateur, MotDePasse))
+        self.conn.commit()
+
+    def deconnexion(self, NomUtilisateur):
+        self.cur.execute("UPDATE Utilisateurs SET Is_connected = 0 WHERE NomUtilisateur = ?",(NomUtilisateur,))
+        self.conn.commit()
 class Toolsbox:
+    def __init__(self):
+        self.pmtr = ""
 
-
-# Utilisez la variable code_python pour obtenir le code Python sous forme de chaîne de caractères. Vous pouvez ensuite l'exécuter comme du code Python en utilisant exec(), ou l'enregistrer dans un fichier si nécessaire. Assurez-vous de personnaliser le chemin de la base de données et d'autres détails selon vos besoins spécifiques.
-
-    def console_test():
-        pmtr = ''
-        while pmtr != "exit":
-            pmtr = input("Entrez votre code : ")
-            exec(pmtr)
+    def console_test(self):
+        while self.pmtr != "exit":
+            self.pmtr = input("Entrez votre code : ")
+            exec(self.pmtr)
 
 
