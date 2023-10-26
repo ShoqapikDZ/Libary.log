@@ -11,5 +11,7 @@ cur = conn.cursor()
 
 #Mettre ci-dessous les modifications de la base de donnée à éxecuter
 
+
+
 conn.commit()
 conn.close()
