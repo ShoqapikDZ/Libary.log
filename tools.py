@@ -25,8 +25,8 @@ class Database:
         # Valider les modifications et fermer la connexion
         self.conn.commit()
 
-    def ajouter_book(self, title, autor, numS, genre, is_emprunte):
-        self.cur.execute("INSERT INTO Books_new (Titre, Auteur, NumeroSerie, Genre, Emprunte) VALUES (?, ?, ?, ?, ?)", (title, autor, numS, genre, is_emprunte))
+    def ajouter_book(self, title, autor, numS, genre):
+        self.cur.execute("INSERT INTO Books_new (Titre, Auteur, NumeroSerie, Genre, Emprunte) VALUES (?, ?, ?, ?, ?)", (title, autor, numS, genre, 0))
         self.conn.commit()
 
     def new_emprunt(self, numS, UtilisateurID, Year, Month, Day):
@@ -43,6 +43,18 @@ class Database:
 
     def instance_user(self):
         self.cur.execute("SELECT * FROM Utilisateurs")
+        # Récupérer toutes les lignes de résultat
+        donnees_user = self.cur.fetchall()
+        return donnees_user
+
+    def instance_books(self):
+        self.cur.execute("SELECT * FROM Books_new")
+        # Récupérer toutes les lignes de résultat
+        donnees_user = self.cur.fetchall()
+        return donnees_user
+
+    def instance_emprunt(self):
+        self.cur.execute("SELECT * FROM Emprunt")
         # Récupérer toutes les lignes de résultat
         donnees_user = self.cur.fetchall()
         return donnees_user
